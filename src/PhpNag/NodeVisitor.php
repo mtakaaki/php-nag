@@ -145,6 +145,24 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
     private function enterBinaryOp(Node\Expr\BinaryOp $node)
     {
         if ($node instanceof Node\Expr\BinaryOp\Equal || $node instanceof Node\Expr\BinaryOp\NotEqual) {
+            if ($node->left instanceof Node\Expr\ConstFetch) {
+                if (strcasecmp($node->left->name->parts[0], 'null') === 0) {
+                    $this->report($node, 'Equal/WEAK_COMP_NULL');
+                } elseif (strcasecmp($node->left->name->parts[0], 'true') === 0) {
+                    $this->report($node, 'Equal/WEAK_COMP_TRUE');
+                } elseif (strcasecmp($node->left->name->parts[0], 'false') === 0) {
+                    $this->report($node, 'Equal/WEAK_COMP_FALSE');
+                }
+            }
+            if ($node->right instanceof Node\Expr\ConstFetch) {
+                if (strcasecmp($node->right->name->parts[0], 'null') === 0) {
+                    $this->report($node, 'Equal/WEAK_COMP_NULL');
+                } elseif (strcasecmp($node->right->name->parts[0], 'true') === 0) {
+                    $this->report($node, 'Equal/WEAK_COMP_TRUE');
+                } elseif (strcasecmp($node->right->name->parts[0], 'false') === 0) {
+                    $this->report($node, 'Equal/WEAK_COMP_FALSE');
+                }
+            }
             if (($node->left instanceof Node\Scalar\LNumber) || ($node->right instanceof Node\Scalar\LNumber)
              || ($node->left instanceof Node\Scalar\DNumber) || ($node->right instanceof Node\Scalar\DNumber)
             ) {
